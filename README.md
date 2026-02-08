@@ -19,7 +19,7 @@
 
 1.  Клонируйте репозиторий
    
-    git clone https://github.com/your-username/museum-api.git
+    git clone https://github.com/daniilfars/MuseumApi
     cd museum-api
     
 2.  Запустите приложение
