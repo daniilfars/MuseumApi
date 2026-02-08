@@ -1,23 +1,20 @@
-﻿using MuseumApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using MuseumApi.Models;
+using MuseumApi.Data;
 
 namespace MuseumApi.Services;
 
-public class PaintingService : IPaintingService
+public class PaintingEfService : IPaintingService
 {
-    readonly List<Painting> Paintings;
-    int nextId = 3;
+    readonly AppDbContext db;
     readonly IMemoryCache MemoryCache;
     readonly int CacheDurationMinutes = 5;
 
-    public PaintingService(IMemoryCache cache)
+    public PaintingEfService(AppDbContext context, IMemoryCache cache)
     {
+        db = context;
         MemoryCache = cache;
-        Paintings = new List<Painting>
-        {
-            new Painting {Id = 1, Title = "Mono", Author = "Da Vinchi", Year = 1872},
-            new Painting {Id = 2, Title = "Football", Author = "Lionel Messi", Year = 2014},
-        }; 
     }
     public List<Painting> GetAll()
     {
@@ -29,10 +26,12 @@ public class PaintingService : IPaintingService
             return paintings;
         }
 
-        Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Данные получены из базы (List)");
-        MemoryCache.Set(cacheKey, Paintings, TimeSpan.FromMinutes(CacheDurationMinutes));
+        paintings = db.Paintings.ToList();
 
-        return Paintings;
+        Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Данные получены из базы");
+        MemoryCache.Set(cacheKey, paintings, TimeSpan.FromMinutes(CacheDurationMinutes));
+
+        return paintings;
     }
     public Painting? Get(int id)
     {
@@ -44,11 +43,11 @@ public class PaintingService : IPaintingService
             return painting;
         }
 
-        painting = Paintings.FirstOrDefault(p => p.Id == id);
+        painting = db.Paintings.Find(id);
 
         if (painting != null)
         {
-            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Данные получены из базы (List)");
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Данные получены из базы");
             MemoryCache.Set(cacheKey, painting, TimeSpan.FromMinutes(CacheDurationMinutes));
         }
 
@@ -57,8 +56,8 @@ public class PaintingService : IPaintingService
 
     public void Add(Painting painting)
     {
-        painting.Id = nextId++;
-        Paintings.Add(painting);
+        db.Paintings.Add(painting);
+        db.SaveChanges();
 
         MemoryCache.Remove("AllPaintings");
     }
@@ -66,15 +65,18 @@ public class PaintingService : IPaintingService
     {
         Painting painting = Get(id);
 
-        if(painting != null)
-            Paintings.Remove(painting);
+        if (painting != null)
+        {
+            db.Paintings.Remove(painting);
+            db.SaveChanges();
 
-        MemoryCache.Remove("AllPaintings");
-        MemoryCache.Remove($"Painting_{id}");
+            MemoryCache.Remove("AllPaintings");
+            MemoryCache.Remove($"Painting_{id}");
+        }
     }
     public void Update(int id, Painting painting)
     {
-        var res = Paintings.FirstOrDefault(p => p.Id == painting.Id);
+        var res = db.Paintings.Find(id);
 
         if (res == null)
             return;
@@ -82,6 +84,8 @@ public class PaintingService : IPaintingService
         res.Title = painting.Title;
         res.Author = painting.Author;
         res.Year = painting.Year;
+
+        db.SaveChanges();
 
         MemoryCache.Remove("AllPaintings");
         MemoryCache.Remove($"Painting_{painting.Id}");

@@ -1,0 +1,799 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Музей картин - Панель управления</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(90deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+            header h1 {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            header p {
+                opacity: 0.9;
+                font-size: 1.1rem;
+            }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Стили для формы */
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+            .form-section h2 {
+                color: #2c3e50;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #4a6491;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #495057;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px 15px;
+                border: 2px solid #dee2e6;
+                border-radius: 8px;
+                font-size: 16px;
+                transition: border-color 0.3s;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: #4a6491;
+                    box-shadow: 0 0 0 3px rgba(74, 100, 145, 0.2);
+                }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background-color: #4a6491;
+            color: white;
+            flex: 2;
+        }
+
+            .btn-primary:hover {
+                background-color: #3a547e;
+                transform: translateY(-2px);
+            }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            flex: 1;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+            }
+        /* Стили для таблицы */
+        .list-section {
+            background: white;
+            border-radius: 10px;
+            padding: 0;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+        }
+
+            .list-section h2 {
+                background-color: #f8f9fa;
+                color: #2c3e50;
+                margin: 0;
+                padding: 20px 25px;
+                border-bottom: 1px solid #e9ecef;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+        .refresh-btn {
+            background: #4a6491;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f1f5fd;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            color: #2c3e50;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Стили для сообщений */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .status-bar {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        /* Стили для фильтра */
+        .filter-section {
+            padding: 15px 25px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+            .filter-section input {
+                flex: 1;
+                padding: 10px 15px;
+                border: 2px solid #dee2e6;
+                border-radius: 8px;
+            }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                margin-bottom: 15px;
+                opacity: 0.5;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-palette"></i> Музей картин</h1>
+            <p>Панель управления коллекцией картин. Добавляйте, редактируйте и управляйте произведениями искусства.</p>
+        </header>
+
+        <div class="alert alert-success hidden" id="successAlert">
+            <i class="fas fa-check-circle"></i>
+            <span id="successMessage">Операция выполнена успешно!</span>
+        </div>
+        <div class="alert alert-error hidden" id="errorAlert">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorMessage">Произошла ошибка!</span>
+        </div>
+
+        <div class="main-content">
+            <section class="form-section">
+                <h2><i class="fas fa-edit"></i> <span id="formTitle">Добавить новую картину</span></h2>
+                <form id="paintingForm">
+                    <input type="hidden" id="paintingId">
+
+                    <div class="form-group">
+                        <label for="title">Название картины *</label>
+                        <input type="text" id="title" required placeholder="Например: Звездная ночь">
+                        <div class="error-message" id="titleError">Название обязательно для заполнения</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="author">Автор</label>
+                        <input type="text" id="author" placeholder="Например: Винсент Ван Гог">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year">Год создания</label>
+                        <input type="number" id="year" min="1200" max="2024" placeholder="Например: 1889">
+                        <div class="error-message" id="yearError">Год должен быть между 1200 и 2024</div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary" id="submitBtn">
+                            <i class="fas fa-plus"></i> Добавить картину
+                        </button>
+                        <button type="button" class="btn-secondary" id="cancelBtn" style="display: none;">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                    </div>
+                </form>
+
+                <div class="status-bar">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="apiStatus">Подключение к API...</span>
+                </div>
+            </section>
+
+            <section class="list-section">
+                <h2>
+                    <span><i class="fas fa-images"></i> Коллекция картин</span>
+                    <button class="refresh-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Обновить
+                    </button>
+                </h2>
+
+                <div class="filter-section">
+                    <input type="text" id="searchInput" placeholder="Поиск по автору...">
+                    <button class="action-btn" id="searchBtn">
+                        <i class="fas fa-search"></i> Найти
+                    </button>
+                    <button class="action-btn" id="clearSearchBtn">
+                        <i class="fas fa-times"></i> Очистить
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table id="paintingsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Автор</th>
+                                <th>Год</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paintingsTableBody">
+                            <!-- Данные будут загружены через JavaScript -->
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <div>Загрузка данных...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="status-bar">
+                    <i class="fas fa-database"></i>
+                    <span>Всего картин: <span id="totalCount">0</span></span>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Конфигурация
+        const API_BASE_URL = 'https://localhost:7085'; // Измени, если используешь другой порт
+        const API_URL = `${ API_BASE_URL }/painting`;
+
+        // Элементы DOM
+        const form = document.getElementById('paintingForm');
+        const formTitle = document.getElementById('formTitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const paintingsTableBody = document.getElementById('paintingsTableBody');
+        const totalCountElement = document.getElementById('totalCount');
+        const apiStatusElement = document.getElementById('apiStatus');
+        const successAlert = document.getElementById('successAlert');
+        const successMessage = document.getElementById('successMessage');
+        const errorAlert = document.getElementById('errorAlert');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Переменные состояния
+        let isEditing = false;
+        let currentPaintingId = null;
+        let allPaintings = [];
+
+        // ==================== ФУНКЦИИ ДЛЯ РАБОТЫ С API ====================
+
+        // Проверка подключения к API
+        async function checkApiStatus() {
+            try {
+                const response = await fetch(`${ API_BASE_URL }/health`);
+                if (response.ok) {
+                    apiStatusElement.innerHTML = '<i class="fas fa-check"></i> API подключен';
+                    apiStatusElement.style.color = '#28a745';
+                } else {
+                    apiStatusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> API не отвечает';
+                    apiStatusElement.style.color = '#dc3545';
+                }
+            } catch (error) {
+                apiStatusElement.innerHTML = '<i class="fas fa-unlink"></i> Не удалось подключиться к API';
+                apiStatusElement.style.color = '#dc3545';
+                console.error('Ошибка подключения к API:', error);
+            }
+        }
+
+        // Загрузка всех картин
+        async function loadPaintings(searchAuthor = '') {
+            try {
+                let url = API_URL;
+                if (searchAuthor) {
+                    // Если в вашем API есть поиск по автору через query параметр
+                    // url = ${API_URL}?author=${encodeURIComponent(searchAuthor)};
+                    // Пока просто фильтруем на клиенте
+                }
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Ошибка HTTP: ${ response.status }`);
+
+                allPaintings = await response.json();
+
+                // Фильтрация на клиенте, если указан автор для поиска
+                let filteredPaintings = allPaintings;
+                if (searchAuthor) {
+                    const searchTerm = searchAuthor.toLowerCase();
+                    filteredPaintings = allPaintings.filter(p =>
+                        p.author && p.author.toLowerCase().includes(searchTerm)
+                    );
+                }
+
+                renderPaintingsTable(filteredPaintings);
+                totalCountElement.textContent = filteredPaintings.length;
+
+                return true;
+            } catch (error) {
+                console.error('Ошибка загрузки картин:', error);
+                showError('Не удалось загрузить данные с сервера');
+                paintingsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>Ошибка загрузки данных</div>
+                            <small>${error.message}</small>
+                        </td>
+                    </tr>
+                `;
+                return false;
+            }
+        }
+
+        // Добавление новой картины
+        async function addPainting(painting) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(painting)
+                });
+
+                if (!response.ok) throw new Error(`Ошибка HTTP: ${ response.status }`);
+
+                const result = await response.json();
+                showSuccess('Картина успешно добавлена!');
+                loadPaintings();
+                resetForm();
+
+                return result;
+            } catch (error) {
+                console.error('Ошибка добавления картины:', error);
+                showError('Не удалось добавить картину');
+                throw error;
+            }
+        }
+
+        // Обновление существующей картины
+        async function updatePainting(id, painting) {
+            try {
+                const response = await fetch(`${ API_URL }/${ id }`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(painting)
+                });
+
+                if (!response.ok) {
+                    if (response.status === 404) throw new Error('Картина не найдена');
+                    throw new Error(`Ошибка HTTP: ${ response.status }`);
+                }
+
+                showSuccess('Картина успешно обновлена!');
+                loadPaintings();
+                resetForm();
+
+                return true;
+            } catch (error) {
+                console.error('Ошибка обновления картины:', error);
+                showError('Не удалось обновить картину');
+                throw error;
+            }
+        }
+
+        // Удаление картины
+        async function deletePainting(id) {
+            if (!confirm('Вы уверены, что хотите удалить эту картину?')) return;
+
+            try {
+                const response = await fetch(`${ API_URL }/${ id }`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    if (response.status === 404) throw new Error('Картина не найдена');
+                    throw new Error(`Ошибка HTTP: ${ response.status }`);
+                }
+
+                showSuccess('Картина успешно удалена!');
+                loadPaintings();
+
+                return true;
+            } catch (error) {
+                console.error('Ошибка удаления картины:', error);
+                showError('Не удалось удалить картину');
+                throw error;
+            }
+        }
+
+        // ==================== ФУНКЦИИ ДЛЯ РАБОТЫ С UI ====================
+
+        // Отображение картин в таблице
+        function renderPaintingsTable(paintings) {
+            if (paintings.length === 0) {
+                paintingsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-image"></i>
+                            <div>Коллекция пуста</div>
+                            <small>Добавьте первую картину с помощью формы слева</small>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const rows = paintings.map(painting => `
+                <tr>
+                    <td>${painting.id}</td>
+                    <td><strong>${painting.title}</strong></td>
+                    <td>${painting.author || 'Не указан'}</td>
+                    <td>${painting.year || 'Не указан'}</td>
+                    <td class="actions">
+                        <button class="action-btn edit-btn" onclick="editPainting(${painting.id})">
+                            <i class="fas fa-edit"></i> Изменить
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deletePainting(${painting.id})">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            paintingsTableBody.innerHTML = rows;
+        }
+
+        // Редактирование картины
+        function editPainting(id) {
+            const painting = allPaintings.find(p => p.id === id);
+            if (!painting) return;
+
+            isEditing = true;
+            currentPaintingId = id;
+
+            // Заполняем форму данными картины
+            document.getElementById('paintingId').value = painting.id;
+            document.getElementById('title').value = painting.title;
+            document.getElementById('author').value = painting.author || '';
+            document.getElementById('year').value = painting.year || '';
+
+            // Меняем интерфейс формы
+            formTitle.textContent = 'Редактировать картину';
+            submitBtn.innerHTML = '<i class="fas fa-save"></i> Сохранить изменения';
+            submitBtn.className = 'btn-primary';
+            cancelBtn.style.display = 'flex';
+
+            // Прокручиваем к форме
+            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Сброс формы
+        function resetForm() {
+            form.reset();
+            document.getElementById('paintingId').value = '';
+
+            isEditing = false;
+            currentPaintingId = null;
+
+            formTitle.textContent = 'Добавить новую картину';
+            submitBtn.innerHTML = '<i class="fas fa-plus"></i> Добавить картину';
+            cancelBtn.style.display = 'none';
+
+            // Сбрасываем стили ошибок
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+
+        // Показать сообщение об успехе
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successAlert.classList.remove('hidden');
+
+            setTimeout(() => {
+                successAlert.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Показать сообщение об ошибке
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorAlert.classList.remove('hidden');
+
+            setTimeout(() => {
+                errorAlert.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Валидация формы
+        function validateForm() {
+            let isValid = true;
+            const title = document.getElementById('title').value.trim();
+            const year = document.getElementById('year').value;
+
+            // Валидация названия
+            const titleError = document.getElementById('titleError');
+            if (!title) {
+                titleError.style.display = 'block';
+                isValid = false;
+            } else {
+                titleError.style.display = 'none';
+            }
+
+            // Валидация года
+            const yearError = document.getElementById('yearError');
+            if (year && (year < 1200 || year > 2024)) {
+                yearError.style.display = 'block';
+                isValid = false;
+            } else {
+                yearError.style.display = 'none';
+            }
+
+            return isValid;
+        }
+
+        // ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
+
+        // Обработка отправки формы
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!validateForm()) return;
+
+            const painting = {
+                title: document.getElementById('title').value.trim(),
+                author: document.getElementById('author').value.trim(),
+                year: document.getElementById('year').value ? parseInt(document.getElementById('year').value) : 0
+            };
+
+            try {
+                if (isEditing && currentPaintingId) {
+                    // Добавляем ID для обновления
+                    painting.id = currentPaintingId;
+                    await updatePainting(currentPaintingId, painting);
+                } else {
+                    await addPainting(painting);
+                }
+            } catch (error) {
+                console.error('Ошибка сохранения картины:', error);
+            }
+        });
+
+        // Обработка кнопки отмены
+        cancelBtn.addEventListener('click', resetForm);
+
+        // Обработка кнопки обновления
+        refreshBtn.addEventListener('click', () => {
+            loadPaintings(searchInput.value.trim());
+            showSuccess('Список обновлен');
+        });
+
+        // Обработка поиска
+        searchBtn.addEventListener('click', () => {
+            const searchTerm = searchInput.value.trim();
+            loadPaintings(searchTerm);
+            if (searchTerm) {
+                showSuccess(`Найдено по автору: "${searchTerm}"`);
+            }
+        });
+
+        // Очистка поиска
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            loadPaintings();
+            showSuccess('Поиск очищен');
+        });
+
+        // Поиск при нажатии Enter
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchBtn.click();
+            }
+        });
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+
+        // При загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            checkApiStatus();
+            loadPaintings();
+
+            // Показываем начальные подсказки
+            setTimeout(() => {
+                if (allPaintings.length === 0) {
+                    showSuccess('Добро пожаловать! Добавьте первую картину в вашу коллекцию.');
+                }
+            }, 1000);
+        });
+
+        // Делаем функции глобальными для использования в onclick
+        window.editPainting = editPainting;
+        window.deletePainting = deletePainting;
+    </script>
+</body>
+</html>

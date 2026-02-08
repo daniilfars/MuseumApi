@@ -9,15 +9,20 @@ namespace MuseumApi.Controllers;
 [Route("[controller]")]
 public class PaintingController : ControllerBase
 {
-    public PaintingController() { }
+    private readonly IPaintingService paintingService;
+
+    public PaintingController(IPaintingService service) 
+    {
+        paintingService = service;
+    }
 
     [HttpGet]
-    public ActionResult<List<Painting>> GetAll() => PaintingService.GetAll();
+    public ActionResult<List<Painting>> GetAll() => paintingService.GetAll();
 
     [HttpGet("{id}")]
     public ActionResult<Painting> Get(int id)
     {
-        Painting painting = PaintingService.Get(id);
+        Painting painting = paintingService.Get(id);
 
         if (painting == null)
             return NotFound();
@@ -28,7 +33,7 @@ public class PaintingController : ControllerBase
     [HttpPost]
     public IActionResult Create(Painting painting)
     {
-        PaintingService.Add(painting);
+        paintingService.Add(painting);
         return CreatedAtAction(nameof(Get), new { id = painting.Id }, painting);
     }
 
@@ -38,12 +43,12 @@ public class PaintingController : ControllerBase
         if (id != painting.Id)
             return BadRequest();
 
-        var existingPainting = PaintingService.Get(id);
+        var existingPainting = paintingService.Get(id);
 
         if (existingPainting == null)
             return NotFound();
 
-        PaintingService.Update(painting);
+        paintingService.Update(id, painting);
 
         return NoContent();
     }
@@ -51,12 +56,12 @@ public class PaintingController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var painting = PaintingService.Get(id);
+        var painting = paintingService.Get(id);
 
         if (painting == null)
             return NotFound();
 
-        PaintingService.Delete(id);
+        paintingService.Delete(id);
 
         return NoContent();
     }
