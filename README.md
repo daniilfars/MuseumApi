@@ -1,4 +1,5 @@
-# 🖼️ Museum API & Gallery
+<img width="1919" height="955" alt="Screenshot_1" src="https://github.com/user-attachments/assets/32663b42-4968-4749-adc4-8628d72052bc" /># 🖼️ Museum API & Gallery
+![Uploading Screenshot_1.png…]()
 
 Полноценное веб-приложение для каталогизации произведений искусства с RESTful API на ASP.NET Core и современным веб-интерфейсом.
 
